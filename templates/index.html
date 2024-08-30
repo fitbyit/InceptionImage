@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Include Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .card {
+            display: flex;
+            flex-direction: column;
+            border: none;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            height: 100%;
+        }
+        .card-img-top {
+            object-fit: contain;
+            height: 200px; /* Fixed height for images */
+            width: 100%;
+        }
+        .card-body {
+            padding: 1rem;
+            flex: 1;
+        }
+        .card-title {
+            font-size: 1.25rem;
+            margin: 0;
+        }
+        .image-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .row {
+            margin-left: 0;
+            margin-right: 0;
+        }
+        .col-md-4 {
+            padding-left: 0;
+            padding-right: 0;
+        }
+        .spinner-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1050; /* Make sure it appears above other content */
+            display: none; /* Hidden by default */
+        }
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            border-width: 0.25em;
+            border-color: rgba(0, 0, 0, 0.1) transparent rgba(0, 0, 0, 0.1) transparent;
+            animation: spinner-border .75s linear infinite;
+        }
+        @keyframes spinner-border {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-4" style="text-align: center;">Image Classification using Inceptionv3</h2>
+        <div class="row mb-4">
+            <div class="mx-auto">
+            <a href="/upload"><button class="btn btn-success">Upload New Image</button></a>
+        </div>
+        </div>
+        <div class="row">
+            <!-- Image Cards -->
+            {% for image_file in image_files %}
+                <div class="col-md-4 mb-4">
+                    <div class="card image-card">
+                        <img src="{{ url_for('static', filename='images/' + image_file) }}" class="card-img-top" alt="{{ image_file }}" onclick="showSpinner(); document.getElementById('selectedImage').value = '{{ image_file }}'; document.getElementById('imageForm').submit();">
+                        <div class="card-body text-center">
+                            <button type="button" class="btn btn-primary">
+                                file: <span class="badge badge-light">{{ image_file }}</span>
+                              </button>
+                            <form action="{{ url_for('delete', filename=image_file) }}" method="post" style="display: inline;">
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <form id="imageForm" method="post" style="display: none;">
+            <input type="hidden" id="selectedImage" name="image">
+        </form>
+    </div>
+    
+    <!-- Spinner -->
+    <div class="spinner-container" id="spinner">
+        <div class="spinner-border"></div>
+    </div>
+
+    <script>
+        function showSpinner() {
+            document.getElementById('spinner').style.display = 'flex';
+        }
+
+        // Hide the spinner after the form is submitted and the page reloads
+        window.onload = function() {
+            document.getElementById('spinner').style.display = 'none';
+        };
+    </script>
+</body>
+</html>

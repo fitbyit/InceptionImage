@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Include Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Prediction Results</h1>
+        <div class="card mb-4">
+            <img src="{{ url_for('static', filename='images/' + image) }}" class="card-img-top" alt="Selected Image" style="height: 250px; width: 300px;">
+            <div class="card-body">
+                <h5 class="card-title">Predictions:</h5>
+                <ul class="list-group">
+                    {% if prediction %}
+                        <li class="list-group-item">
+                            <strong>{{ prediction[0][1] }}</strong> ({{ (prediction[0][2] * 100) | round(2) }}%)
+                        </li>
+                    {% else %}
+                        <li class="list-group-item">No predictions available.</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        <a href="{{ url_for('index') }}" class="btn btn-primary">Classify Another Image</a>
+    </div>
+</body>
+</html>
